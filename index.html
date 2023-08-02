@@ -4,7 +4,7 @@
     <title>Create Project Sample</title>
   </head>  
   <body>
-    <button id="create-project-button">Create project</button>
+    <!-- <button id="create-project-button">Create project</button> -->
     <img id="image-container" height="420" width="420" />
 
     <script src="https://sdk.cc-embed.adobe.com/v2/CCEverywhere.js"></script>
@@ -22,30 +22,27 @@
         var projectId = null;
         
         var imageContainer = document.getElementById("image-container");
-        const createButton = document.getElementById("create-project-button");
+        // const createButton = document.getElementById("create-project-button");
+        const createDesignCallback = {
+            onCancel: () => {},
+            onPublish: (publishParams) => {
+                const localData = { project: publishParams.projectId, image: publishParams.asset.data };
+                imageContainer.src = localData.image;
+                projectId = localData.project;
+            },
+            onError: (err) => {
+                console.error('Error received is', err.toString());
+            },
+        };
         
-        createButton.addEventListener('click', () => {
-            const createDesignCallback = {
-                onCancel: () => {},
-                onPublish: (publishParams) => {
-                    const localData = { project: publishParams.projectId, image: publishParams.asset.data };
-                    imageContainer.src = localData.image;
-                    projectId = localData.project;
-                },
-                onError: (err) => {
-                    console.error('Error received is', err.toString());
-                },
-            };
-            
-            ccEverywhere.createDesign(
-                {
-                    callbacks: createDesignCallback, 
-                    outputParams: {
-                        outputType: "base64",
-                    }
+        ccEverywhere.createDesign(
+            {
+                callbacks: createDesignCallback, 
+                outputParams: {
+                    outputType: "base64",
                 }
-            );  
-        });
+            }
+        );
     })();
     </script>
   </body> 
